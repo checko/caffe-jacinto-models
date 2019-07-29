@@ -2,10 +2,10 @@ from __future__ import print_function
 import caffe
 from google.protobuf import text_format
 import ast
-from models.model_libs import *
-import models.jacintonet_v2
-import models.mobilenet
-import models.mobilenetv2
+from model_libs import *
+import jacintonet_v2
+import mobilenet
+import mobilenetv2
 import numpy as np
 import math
 import os
@@ -245,19 +245,19 @@ def CreateMultiBoxHead(net, data_layer="data", num_classes=[], from_layers=[],
 
 def CoreNetwork(config_param, net, from_layer):
     if config_param.model_name == 'jdetnet21v2':
-        out_layer, out_layer_names = models.jacintonet_v2.jdetnet21(net, from_layer=from_layer,\
+        out_layer, out_layer_names = jacintonet_v2.jdetnet21(net, from_layer=from_layer,\
           num_output=config_param.num_feature,stride_list=config_param.stride_list,dilation_list=config_param.dilation_list,\
           freeze_layers=config_param.freeze_layers, output_stride=config_param.feature_stride)
     elif config_param.model_name == 'jdetnet21v2-s8':
-        out_layer, out_layer_names = models.jacintonet_v2.jdetnet21_s8(net, from_layer=from_layer,\
+        out_layer, out_layer_names = jacintonet_v2.jdetnet21_s8(net, from_layer=from_layer,\
           num_output=config_param.num_feature,stride_list=config_param.stride_list,dilation_list=config_param.dilation_list,\
           freeze_layers=config_param.freeze_layers, output_stride=config_param.feature_stride)              
     elif config_param.model_name == 'jdetnet21v2-fpn':
-        out_layer, out_layer_names = models.jacintonet_v2.jdetnet21_fpn(net, from_layer=from_layer,\
+        out_layer, out_layer_names = jacintonet_v2.jdetnet21_fpn(net, from_layer=from_layer,\
           num_output=config_param.num_feature,stride_list=config_param.stride_list,dilation_list=config_param.dilation_list,\
           freeze_layers=config_param.freeze_layers, output_stride=config_param.feature_stride)
     elif config_param.model_name == 'ssdJacintoNetV2':
-        out_layer, out_layer_names = models.jacintonet_v2.ssdJacintoNetV2(net, from_layer=from_layer,\
+        out_layer, out_layer_names = jacintonet_v2.ssdJacintoNetV2(net, from_layer=from_layer,\
           num_output=config_param.num_feature,stride_list=config_param.stride_list,\
           dilation_list=config_param.dilation_list,\
           freeze_layers=config_param.freeze_layers, output_stride=config_param.feature_stride,\
@@ -269,12 +269,12 @@ def CoreNetwork(config_param, net, from_layer):
     elif 'mobiledetnetv2' in config_param.model_name:
         expansion_t = float(config_param.model_name.split('netv2t')[1].split('-')[0]) if 'v2t' in config_param.model_name else None
         wide_factor = float(config_param.model_name.split('-')[1]) if '-' in config_param.model_name else 1.0
-        out_layer, out_layer_names = models.mobilenetv2.mobiledetnetv2(net, from_layer=from_layer, wide_factor=wide_factor, expansion_t=expansion_t, 
+        out_layer, out_layer_names = mobilenetv2.mobiledetnetv2(net, from_layer=from_layer, wide_factor=wide_factor, expansion_t=expansion_t, 
                 num_intermediate=config_param.num_intermediate)
     elif 'mobiledetnet' in config_param.model_name:
         expansion_t = float(config_param.model_name.split('nett')[1].split('-')[0]) if 'nett' in config_param.model_name else None
         wide_factor = float(config_param.model_name.split('-')[1])
-        out_layer, out_layer_names = models.mobilenet.mobiledetnet(net, from_layer=from_layer, wide_factor=wide_factor,
+        out_layer, out_layer_names = mobilenet.mobiledetnet(net, from_layer=from_layer, wide_factor=wide_factor,
                 num_intermediate=config_param.num_intermediate, expansion_t=expansion_t)
     else:
         ValueError("Invalid model name")
@@ -360,7 +360,7 @@ def main():
     # Which layers to freeze (no backward) during training.
     config_param.freeze_layers = []
     # Defining which GPUs to use.
-    config_param.gpus = "0,1" #gpus = "0"  
+    config_param.gpus = "0" #gpus = "0"  
 
     config_param.batch_size = 32
     config_param.accum_batch_size = 32

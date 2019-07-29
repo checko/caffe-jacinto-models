@@ -1,6 +1,6 @@
 from __future__ import print_function
 import caffe
-from models.model_libs import *
+from model_libs import *
 
 def jacintonet11_base(net, from_layer=None, use_batchnorm=True, use_relu=True, num_output=1000, stride_list=None, dilation_list=None, freeze_layers=None, in_place=True):  
    #Top and Bottom blobs must be different for NVCaffe BN caffe-0.15 (in_place=False), but no such constraint for caffe-0.16

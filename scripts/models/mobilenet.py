@@ -1,6 +1,6 @@
 from __future__ import print_function
 import caffe
-from models.model_libs import *
+from model_libs import *
 import copy
 import math
 
